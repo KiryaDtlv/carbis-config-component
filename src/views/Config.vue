@@ -1,7 +1,19 @@
 <template>
   <v-card>
     <v-card-text>
-      <FieldSet :fieldSet="metaConfig" :exclude="exclude" v-model="value" >
+      <v-skeleton-loader
+        v-if="loading"
+        type="list-item-three-line"
+      ></v-skeleton-loader>
+      <FieldSet
+        v-else
+        :locale="localization"
+        :fieldSet="metaConfig"
+        :isDev="isDev"
+        :exclude="exclude"
+        v-model="value"
+        @validate="(v) => $emit('validate', v)"
+      >
         <slot v-for="(_, name) in $slots" :name="name" :slot="name" />
       </FieldSet>
     </v-card-text>
@@ -11,14 +23,18 @@
 <script>
 import FieldSet from "../components/Config/FieldSet.vue";
 export default {
-  props: ["value", "metaConfig", 'exclude'],
+  props: ["value", "metaConfig", "exclude", "loading", "locale", "isDev"],
   components: { FieldSet },
-  mounted() {
-    console.log(this.config);
-    console.log('слоты: ', this.$slots)
+  mounted() {},
+  methods: {
+    localization(value) {
+      if (this.locale) {
+        return this.locale(value) || value;
+      } else {
+        return value;
+      }
+    },
   },
-  computed: {},
-  
 };
 </script>
 

@@ -1,52 +1,71 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
+      <div>Carbis Config</div>
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
     </v-app-bar>
 
-    <v-main v-if="!loading">
-      <Config :metaConfig="metaConfig" v-model="localConfig" :exclude="[]" >
-        <template v-slot:button>
-          <v-btn @click="updateConfig(localConfig)">Тест</v-btn>
+    <v-main>
+      <Config
+        :metaConfig="metaConfig"
+        v-model="localConfig"
+        :isDev="false"
+        :exclude="[]"
+        :loading="loading"
+        @validate="(v) => showValidate(v)"
+      >
+        <!-- <template #r_keeper_references-station-slot="{ value }">
+          <Selector
+            :value="value"
+            :items="[
+              { id: 1, name: 'Стол' },
+              { id: 2, name: 'Стол2' },
+            ]"
+            ><template v-slot:prepend>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
+                </template>
+              </v-tooltip>
+            </template>
+          </Selector>
+        </template> -->
+        <template #r_keeper_server-action>
+          <v-btn color="primary">Проверить соединение</v-btn>
         </template>
-        <template v-slot:r_keeper-btn>
-          <v-btn @click="checkConnection(localConfig.r_keeper)">Проверить соединение</v-btn>
+        <template v-slot:action>
+          <v-spacer></v-spacer>
+          <v-btn @click="updateConfig(localConfig)" class="primary">Тест</v-btn>
         </template>
+        <template #r_keeper_server-footer-slot>
+          <SaaS
+            v-if="localConfig.r_keeper_server.use_saas"
+            :loading="loading"
+            :use_tcp="!!localConfig.r_keeper_server.use_tcp"
+            :config="{ use_saas: localConfig.r_keeper_server.use_saas }"
+            :original_value="true"
+            ref="saasxml"
+          />
+        </template>
+        <!-- <template #probonus_settings-action>
+          <v-btn
+            color="primary"
+            @click="showValidate(localConfig.probonus_settings)"
+            >Проверить соединение</v-btn
+          >
+        </template>
+        <template v-slot:action>
+          <v-spacer></v-spacer>
+          <v-btn @click="updateConfig(localConfig)" class="primary">Тест</v-btn>
+        </template> -->
       </Config>
     </v-main>
   </v-app>
 </template>
 
 <script>
+import SaaS from "./components/SaaS.vue";
+import Selector from "./ui/Carbis/Selector.vue";
 import Config from "./views/Config";
 
 export default {
@@ -54,17 +73,19 @@ export default {
 
   components: {
     Config,
+    Selector,
+    SaaS,
   },
   async mounted() {
     await this.$store.dispatch("getMetaConfig");
     await this.$store.dispatch("getConfig");
-    this.localConfig = this.config
+    this.localConfig = this.config;
     this.loading = false;
   },
   data() {
     return {
       loading: true,
-      localConfig: undefined
+      localConfig: undefined,
     };
   },
   computed: {
@@ -76,10 +97,17 @@ export default {
     },
   },
   methods: {
-    async updateConfig(config){
-      await this.$store.dispatch("updateConfig", config);
-      this.localConfig = this.config
-    }
-  }
+    showValidate(newValue) {
+      console.log(newValue);
+    },
+    async updateConfig(config) {
+      try {
+        this.loading = true;
+        await this.$store.dispatch("updateConfig", config);
+        this.localConfig = this.config;
+      } catch (e) {}
+      this.loading = false;
+    },
+  },
 };
 </script>

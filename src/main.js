@@ -5,6 +5,13 @@ import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
+Vue.prototype.$t = function (phrase) {
+  const test = {
+
+  }
+  return test[phrase]
+}
+
 new Vue({
   store,
   vuetify,

@@ -1,65 +1,80 @@
 <template>
-  <v-sheet v-if="typeMap[meta.type] != 'bool'">
-  <InputField
-    v-model="currentValue"
-    :label="meta.label"
-    :type="typeMap[meta.type]"
-    v-if="!meta.secret"
-  >
-    <template v-slot:prepend>
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
+  <v-sheet>
+    <slot name="develop"></slot>
+    <v-sheet v-if="[typeMap.str, typeMap.int].includes(typeMap[meta.type])">
+      <InputField
+        v-model="currentValue"
+        @change="$emit('validate', currentValue)"
+        :label="locale(meta.label)"
+        :type="typeMap[meta.type]"
+        v-if="!meta.secret"
+      >
+        <template v-slot:prepend>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
+            </template>
+            {{ locale(meta.hint) || locale(meta.label) }}
+          </v-tooltip>
         </template>
-        {{ meta.hint }}
-      </v-tooltip>
-    </template>
-  </InputField>
-  <PasswordField
-    v-model="currentValue"
-    :label="meta.label"
-    :type="typeMap[meta.type]"
-    v-else
-  >
-    <template v-slot:prepend>
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
+      </InputField>
+      <PasswordField
+        @change="$emit('validate', currentValue)"
+        v-model="currentValue"
+        :label="meta.label"
+        :type="typeMap[meta.type]"
+        v-else
+      >
+        <template v-slot:prepend>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
+            </template>
+            {{ locale(meta.hint) || locale(meta.label) }}
+          </v-tooltip>
         </template>
-        {{ meta.hint }}
-      </v-tooltip>
-    </template>
-  </PasswordField>
-  </v-sheet>
-  <v-sheet v-else>
-    <CarbisSwitch v-model="currentValue" :label="meta.label">
-      <template v-slot:prepend>
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
+      </PasswordField>
+    </v-sheet>
+    <v-sheet v-else-if="[typeMap.bool].includes(typeMap[meta.type])">
+      <CarbisSwitch
+        v-model="currentValue"
+        :label="locale(meta.label)"
+        @change="$emit('validate', currentValue)"
+      >
+        <template v-slot:prepend>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
+            </template>
+            {{ locale(meta.hint) || locale(meta.label) }}
+          </v-tooltip>
         </template>
-        {{ meta.hint }}
-      </v-tooltip>
-    </template>
-    </CarbisSwitch>
+      </CarbisSwitch>
+    </v-sheet>
+    <v-sheet v-else>
+      <v-alert color="warning">
+        <span style="color: white">Необходимо переопределить поле</span>
+      </v-alert>
+    </v-sheet>
   </v-sheet>
 </template>
 
 <script>
 import InputField from "../../ui/Carbis/InputField.vue";
 import PasswordField from "../../ui/Carbis/PasswordField.vue";
-import CarbisSwitch from '../../ui/Carbis/CarbisSwitch.vue';
+import CarbisSwitch from "../../ui/Carbis/CarbisSwitch.vue";
 export default {
   components: { InputField, PasswordField, CarbisSwitch },
-  props: ["value", "meta"],
+  props: ["value", "meta", "locale"],
   data() {
     return {
       typeMap: {
         str: "text",
         int: "number",
-        bool: "bool"
+        float: "number",
+        bool: "bool",
       },
-      currentValue: this.value
+      currentValue: this.value,
     };
   },
   computed: {
@@ -94,11 +109,10 @@ export default {
     },
   },
   watch: {
-    currentValue(newValue){
-      console.log('watch: ', newValue)
-      this.$emit('input', newValue)
-    }
-  }
+    currentValue(newValue) {
+      this.$emit("input", newValue);
+    },
+  },
 };
 </script>
 
