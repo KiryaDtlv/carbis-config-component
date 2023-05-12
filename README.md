@@ -13,7 +13,7 @@
 </Config>
 ```
 # Table of contents
-- [Props](https://github.com/KiryaDtlv/carbis-config-component/edit/main/README.md#props)
+- [Props](#head-2)
 - [Events](#head-3)
 - [Slots](#head-4)
 - [Example](#head-5)
