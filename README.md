@@ -1,19 +1,95 @@
-# carbis-config-component
+<hr>
+Модуль для работы с Parametrica
+# <span name="head-1">Instructions</span>
 
-## Project setup
+```javascript
+<Config
+  :metaConfig="metaConfig"
+  v-model="localConfig"
+  :isDev="false"
+  :exclude="[]"
+  :loading="loading"
+  @validate="(v) => showValidate(v)">
+</Config>
 ```
-npm install
+# Table of contents
+- [Props](#head-2)
+- [Events](#head-3)
+- [Slots](#head-4)
+- [Example](#head-5)
+
+
+
+# <span name="head-2">Props</span>
+```
+metaConfig          - Объект метаданных конфигурации
+value               - Объект данных конфигурации
+isDev               - Режим разработчика
+exclude             - Список полей, которые не должны отображаться
+loading             - Состояние загрузки
 ```
 
-### Compiles and hot-reloads for development
+# <span name="head-3">Events</span>
 ```
-npm run serve
+validate           - Событие, происходящее при изменении поля
+```
+# <span name="head-4">Slots</span>
+Данный модуль позволяет переопределить компонент любого поля, для удобства необходимо перейти в режим разработчика **isDev="true"**
+```
+[FieldSet]-slot                 - Переопределение компонента FieldSet 
+[FieldSet-Field]-slot           - Переопределние поля в FieldSet
+[FieldSet.FieldSet-Field]-slot  - Переопределение поля во вложенном FieldSet
+[FieldSet]-action-slot          - Переопределение действия в компоненте FieldSet
+[FieldSet]-footer-slot          - Переопределение подвала компонента в FieldSet
+[FieldSet]-header-slot          - Переопределение верхней части компонента в FieldSet
+[Field]-slot                    - Переопределение примтивного поля на верхнем уровне
+action-slot                     - Переопределение действия основного компонента настроек
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+# <span name="head-5">Example</span>
+Примеры использования
+```python
+from .ext.parametrica import Field, Fieldset, Parametrica, InRange, io
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+#Let`s define a Server fieldset
+class Server(Fieldset):
+    host = Field[str](default='0.0.0.0').label('Server address')
+    port = Field[int](default=0).label('Server port').rule(InRange(0, 65535))
+
+#Inheritance is also supported
+class AuthServer(Server):
+    user = Field[str]('admin').label('Username')
+    password = Field[str]('P@55\/\/0rd').label('Password').password()
+
+#Finally, define a configuration root
+class Config(Parametrica):
+    api_server = Field[AuthServer](host="any.api.com", port="443").label('API Server')
+    local_server = Field[Server](port=8080).label('Local server')
+
+    #of course, you can define any field in the config root
+    deferred_startup = Field[bool](False).label('Start server after 10 secs')
+
+config = Config(io.YAMLFileConfigIO('config.yaml'))
+``` 
+Далее мы можем получить метаданные конфигурации , вызвав метод ***\_\_metadata\_\_()*** - данные отсюда передаём в ***metaConfig***
+Для получения данных конфигурации используем метод ***export()*** - данные отсюда передаём в ***v-model***
+```
+<Config
+  :metaConfig="metaConfig"
+  v-model="localConfig"
+  :exclude="[]"
+  :loading="loading"
+  @validate="(v) => showValidate(v)"
+>
+  <template #api_server-action-slot>
+    <v-btn color="primary">Проверить соединение</v-btn>
+  </template>
+  <template v-slot:action-slot>
+    <v-spacer></v-spacer>
+    <v-btn @click="updateConfig(localConfig)" class="primary"
+      >Сохранить</v-btn
+    >
+  </template>
+</Config>
+```
+В данном примере мы переопределяем action-slot у основного компонента и у FieldSet'а AuthServer
