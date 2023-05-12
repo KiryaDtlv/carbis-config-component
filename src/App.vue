@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark>
-      <div>Carbis Config</div>
+      <h1>Carbis Config Component</h1>
       <v-spacer></v-spacer>
     </v-app-bar>
 
@@ -9,12 +9,22 @@
       <Config
         :metaConfig="metaConfig"
         v-model="localConfig"
-        :isDev="false"
-        :exclude="[]"
+        :isDev="true"
+        :exclude="['deferred_startup']"
         :loading="loading"
         @validate="(v) => showValidate(v)"
       >
-        <!-- <template #r_keeper_references-station-slot="{ value }">
+        <template #api_server-action-slot>
+          <v-btn color="primary">Проверить соединение</v-btn>
+        </template>
+        <template v-slot:action-slot>
+          <v-spacer></v-spacer>
+          <v-btn @click="updateConfig(localConfig)" class="primary"
+            >Сохранить</v-btn
+          >
+        </template>
+      </Config>
+      <!-- <template #r_keeper_references-station-slot="{ value }">
           <Selector
             :value="value"
             :items="[
@@ -30,14 +40,7 @@
             </template>
           </Selector>
         </template> -->
-        <template #r_keeper_server-action>
-          <v-btn color="primary">Проверить соединение</v-btn>
-        </template>
-        <template v-slot:action>
-          <v-spacer></v-spacer>
-          <v-btn @click="updateConfig(localConfig)" class="primary">Тест</v-btn>
-        </template>
-        <template #r_keeper_server-footer-slot>
+      <!-- <template #r_keeper_server-footer-slot>
           <SaaS
             v-if="localConfig.r_keeper_server.use_saas"
             :loading="loading"
@@ -46,8 +49,8 @@
             :original_value="true"
             ref="saasxml"
           />
-        </template>
-        <!-- <template #probonus_settings-action>
+        </template> -->
+      <!-- <template #probonus_settings-action>
           <v-btn
             color="primary"
             @click="showValidate(localConfig.probonus_settings)"
@@ -58,7 +61,6 @@
           <v-spacer></v-spacer>
           <v-btn @click="updateConfig(localConfig)" class="primary">Тест</v-btn>
         </template> -->
-      </Config>
     </v-main>
   </v-app>
 </template>

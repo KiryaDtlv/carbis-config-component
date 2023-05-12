@@ -7,7 +7,7 @@
         @change="$emit('validate', currentValue)"
         :label="locale(meta.label)"
         :type="typeMap[meta.type]"
-        v-if="!meta.secret"
+        v-if="!meta.password"
       >
         <template v-slot:prepend>
           <v-tooltip top>

@@ -75,7 +75,9 @@
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <slot :name="relativeKey ? `${relativeKey}-action` : 'action'"></slot>
+      <slot
+        :name="(relativeKey ? `${relativeKey}-action` : 'action') + '-slot'"
+      ></slot>
     </v-card-actions>
   </v-card>
 </template>
