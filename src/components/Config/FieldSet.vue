@@ -1,8 +1,6 @@
 <template>
   <v-card class="mb-3">
-    <v-card-title>{{
-      fieldSet.label ? locale(fieldSet.label) : "Настройки"
-    }}</v-card-title>
+    <v-card-title>{{ fieldSet.label || "Настройки" }}</v-card-title>
     <v-card-subtitle v-if="isDev && relativeKey">
       <div style="font-size: 13px">
         -- {{ relativeKey + "-slot" }} используется режим разработчика --
@@ -11,12 +9,12 @@
     <v-card-text>
       <slot v-for="key in fieldSetKeys" :name="slotName(relativeKey, key)">
         <FieldSet
+          class="mb-4"
           :exclude="
             excludeObject[key]
               ? [excludeObject[key], ...newExclude]
               : newExclude
           "
-          :locale="locale"
           :isDev="isDev"
           :fieldSet="currentFieldSet[key]"
           :relativeKey="relativeKey ? `${relativeKey}.${key}` : key"
@@ -48,7 +46,6 @@
           </div>
           <slot :name="slotName(relativeKey, key)" :value="value[key]">
             <Primitive
-              :locale="locale"
               :isDev="isDev"
               @validate="
                 (v) =>
@@ -86,9 +83,15 @@
 // @updateValue="(newValue) => {value[key] = newValue; $emit('input',)} "
 import Primitive from "./Primitive.vue";
 export default {
-  props: ["fieldSet", "value", "exclude", "relativeKey", "locale", "isDev"],
-  name: "FieldSet",
   components: { Primitive },
+  name: "FieldSet",
+  props: {
+    value: Object,
+    fieldSet: { type: Object, default: {} },
+    exclude: { type: Array, default: [] },
+    relativeKey: { type: String, default: undefined },
+    isDev: { type: Boolean, default: false },
+  },
   mounted() {
     this.primitiveKeys.forEach((element) => {
       this.value[element];
