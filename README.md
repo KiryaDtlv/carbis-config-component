@@ -1,5 +1,4 @@
 # Instructions
-<hr>
 Модуль для работы с <a href="https://github.com/FosterToster/parametrica">Parametrica</a>
 
 ```javascript
