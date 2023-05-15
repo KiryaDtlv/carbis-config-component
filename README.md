@@ -1,5 +1,5 @@
 # Instructions
-Модуль для работы с <a href="https://github.com/FosterToster/parametrica">Parametrica</a>
+Модуль для отображения и работы с конфигурацией, взаимодействующий с <a href="https://github.com/FosterToster/parametrica">Parametrica</a>
 
 ```javascript
 <Config
