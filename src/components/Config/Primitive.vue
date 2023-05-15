@@ -4,8 +4,8 @@
     <v-sheet v-if="[typeMap.str, typeMap.int].includes(typeMap[meta.type])">
       <InputField
         v-model="currentValue"
-        @change="$emit('validate', currentValue)"
-        :label="locale(meta.label)"
+        @change="(v) => $emit('validate', v)"
+        :label="meta.label"
         :type="typeMap[meta.type]"
         v-if="!meta.password"
       >
@@ -14,12 +14,17 @@
             <template v-slot:activator="{ on }">
               <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
             </template>
-            {{ locale(meta.hint) || locale(meta.label) }}
+            {{ meta.hint || meta.label }}
           </v-tooltip>
+        </template>
+        <template #append-outer>
+          <v-icon color="warning" @click="reset(originalValue)">{{
+            originalValue !== currentValue ? "mdi-update" : undefined
+          }}</v-icon>
         </template>
       </InputField>
       <PasswordField
-        @change="$emit('validate', currentValue)"
+        @change="(v) => $emit('validate', v)"
         v-model="currentValue"
         :label="meta.label"
         :type="typeMap[meta.type]"
@@ -30,26 +35,47 @@
             <template v-slot:activator="{ on }">
               <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
             </template>
-            {{ locale(meta.hint) || locale(meta.label) }}
+            {{ meta.hint || meta.label }}
           </v-tooltip>
+        </template>
+
+        <template #append-outer>
+          <v-icon color="warning" @click="reset(originalValue)">{{
+            originalValue !== currentValue ? "mdi-update" : undefined
+          }}</v-icon>
         </template>
       </PasswordField>
     </v-sheet>
     <v-sheet v-else-if="[typeMap.bool].includes(typeMap[meta.type])">
-      <CarbisSwitch
+      <v-switch
+        inset
+        dense
         v-model="currentValue"
-        :label="locale(meta.label)"
-        @change="$emit('validate', currentValue)"
+        :label="meta.label"
+        @change="
+          (v) => {
+            $emit('input', v);
+            $emit('validate', currentValue);
+          }
+        "
       >
-        <template v-slot:prepend>
+        <template #prepend>
           <v-tooltip top>
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
             </template>
-            {{ locale(meta.hint) || locale(meta.label) }}
+            {{ meta.hint || meta.label }}
           </v-tooltip>
         </template>
-      </CarbisSwitch>
+        <template #label>
+          <div class="align-center">
+            <span class="mr-2">{{ meta.label }}</span>
+            <v-icon color="warning" @click="reset(originalValue)">{{
+              originalValue !== currentValue ? "mdi-update" : undefined
+            }}</v-icon>
+          </div>
+        </template>
+      </v-switch>
     </v-sheet>
     <v-sheet v-else>
       <v-alert color="warning">
@@ -65,7 +91,16 @@ import PasswordField from "../../ui/Carbis/PasswordField.vue";
 import CarbisSwitch from "../../ui/Carbis/CarbisSwitch.vue";
 export default {
   components: { InputField, PasswordField, CarbisSwitch },
-  props: ["value", "meta", "locale"],
+  props: {
+    value: {
+      type: [Number, String, Boolean],
+      required: true,
+    },
+    meta: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       typeMap: {
@@ -74,6 +109,7 @@ export default {
         float: "number",
         bool: "bool",
       },
+      originalValue: this.value,
       currentValue: this.value,
     };
   },
@@ -87,6 +123,10 @@ export default {
     },
   },
   methods: {
+    reset(value) {
+      this.currentValue = value;
+      this.$emit("validate", value);
+    },
     getRange(rule) {
       const range = [];
       rule.split(",").forEach((element) => {
@@ -110,6 +150,7 @@ export default {
   },
   watch: {
     currentValue(newValue) {
+      console.log("currentValue: ", newValue);
       this.$emit("input", newValue);
     },
   },
