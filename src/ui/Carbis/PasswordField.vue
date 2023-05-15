@@ -1,5 +1,5 @@
 <template>
-  <v-text-field
+  <InputField
     v-bind="$attrs"
     v-on="$listeners"
     :append-icon="showpwd ? 'mdi-eye-off' : 'mdi-eye'"
@@ -7,11 +7,13 @@
     :type="showpwd ? $attrs.type : 'password'"
   >
     <slot v-for="(_, name) in $slots" :name="name" :slot="name" />
-  </v-text-field>
+  </InputField>
 </template>
 
 <script>
+import InputField from "./InputField.vue";
 export default {
+  components: { InputField },
   mounted() {
     console.log(this.$attrs);
   },
