@@ -1,6 +1,5 @@
-<hr>
-Модуль для работы с Parametrica
-# <span name="head-1">Instructions</span>
+# Instructions
+Модуль для отображения и работы с конфигурацией, взаимодействующий с <a href="https://github.com/FosterToster/parametrica">Parametrica</a>
 
 ```javascript
 <Config
@@ -32,6 +31,7 @@ loading             - Состояние загрузки
 # <span name="head-3">Events</span>
 ```
 validate           - Событие, происходящее при изменении поля
+update             - Событие, которое возвращает объект, содержащий исключительно изменённые поля
 ```
 # <span name="head-4">Slots</span>
 Данный модуль позволяет переопределить компонент любого поля, для удобства необходимо перейти в режим разработчика **isDev="true"**
@@ -93,10 +93,7 @@ config = Config(io.YAMLFileConfigIO('config.yaml'))
 </Config>
 ```
 В данном примере мы переопределяем action-slot у основного компонента и у FieldSet'а AuthServer
-![image](https://github.com/KiryaDtlv/carbis-config-component/assets/60767148/b0dc236c-8136-4905-ac63-07ed64558a6f)
 Для удобства разработки необходимо переключить компонент в режим разработки, передав параметр isDev="true", что даёт возможность увидеть слоты, которые можно переиспользовать
-![image](https://github.com/KiryaDtlv/carbis-config-component/assets/60767148/39f2bd3c-dc36-487e-9d7d-9f6c52a1e182)
 Если нам необходимо скрыть поле, например ***deferred_startup*** мы передаём в поле ***:exclude="['deferred_startup']"***
-![image](https://github.com/KiryaDtlv/carbis-config-component/assets/60767148/05fd6a2f-3361-4583-9c27-92060d26fa28)
 
 
