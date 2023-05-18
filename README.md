@@ -11,6 +11,10 @@
   @validate="(v) => showValidate(v)">
 </Config>
 ```
+# Installation
+```
+npm i carbis-config-component
+```
 # Table of contents
 - [Props](#head-2)
 - [Events](#head-3)
