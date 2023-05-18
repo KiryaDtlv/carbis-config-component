@@ -9,9 +9,10 @@
     <v-card-text>
       <slot
         v-for="key in fieldSetKeys"
-        :fieldSet="currentFieldSet[key]"
-        :relativeKey="relativeKey ? `${relativeKey}.${key}` : key"
-        :value="value[key]"
+        :item="value[key]"
+        :meta="currentFieldSet[key]"
+        :relativeKey="relativeKey"
+        :currentKey="key"
         :name="slotName(relativeKey, key)"
       >
         <FieldSet
@@ -58,8 +59,7 @@
             :item="value[key]"
             :relativeKey="relativeKey"
             :currentKey="key"
-            :setter="updateValue"
-            :test="'test'"
+            :setattr="(value) => updateValue(key, value)"
           >
             <Primitive
               :isDev="isDev"

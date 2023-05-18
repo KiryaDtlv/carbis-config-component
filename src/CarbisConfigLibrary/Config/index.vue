@@ -50,13 +50,7 @@ export default {
       updatedState: {},
     };
   },
-  mounted() {
-    console.log(this.$slots);
-    console.log(this.$refs);
-    console.log(this.$attrs);
-    console.log(this.$scopedSlots);
-    console.log(this.$props);
-  },
+  mounted() {},
 
   methods: {
     localization(value) {
