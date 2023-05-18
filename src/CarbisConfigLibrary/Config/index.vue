@@ -4,16 +4,20 @@
       v-if="loading"
       type="list-item-three-line"
     ></v-skeleton-loader>
-    <FieldSet
-      v-else
-      :fieldSet="metaConfig"
-      :isDev="isDev"
-      :exclude="exclude"
-      v-model="value"
-      @validate="(v) => onValidate(v)"
-    >
-      <slot v-for="(_, name) in $slots" :name="name" :slot="name" />
-    </FieldSet>
+    <v-sheet v-else>
+      <slot name="test_test-slot"></slot>
+      <FieldSet
+        :fieldSet="metaConfig"
+        :isDev="isDev"
+        :exclude="exclude"
+        v-model="value"
+        @validate="(v) => onValidate(v)"
+      >
+        <template v-for="(_, name) in $scopedSlots" v-slot:[name]="data">
+          <slot :name="name" v-bind="data" />
+        </template>
+      </FieldSet>
+    </v-sheet>
   </v-sheet>
 </template>
 
@@ -45,6 +49,13 @@ export default {
       savedState: {},
       updatedState: {},
     };
+  },
+  mounted() {
+    console.log(this.$slots);
+    console.log(this.$refs);
+    console.log(this.$attrs);
+    console.log(this.$scopedSlots);
+    console.log(this.$props);
   },
 
   methods: {

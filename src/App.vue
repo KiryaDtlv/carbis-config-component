@@ -9,11 +9,20 @@
       <Config
         :metaConfig="metaConfig"
         v-model="localConfig"
-        :isDev="false"
+        :isDev="true"
         :loading="loading"
         @update="(v) => showValidate(v)"
         @validate="(v) => showValidate(v)"
       >
+        <template
+          #api_server-password-slot="{ meta, item, setter, currentKey }"
+        >
+          <v-text-field
+            :label="meta.label"
+            :value="item"
+            @change="(v) => setter(currentKey, v)"
+          ></v-text-field>
+        </template>
         <template #api_server-action-slot>
           <v-btn
             color="primary"
@@ -33,8 +42,6 @@
 </template>
 
 <script>
-// import SaaS from "./components/SaaS.vue";
-// import Selector from "./ui/Carbis/Selector.vue";
 import Config from "./CarbisConfigLibrary/Config/index.vue";
 
 export default {

@@ -7,7 +7,13 @@
       </div>
     </v-card-subtitle>
     <v-card-text>
-      <slot v-for="key in fieldSetKeys" :name="slotName(relativeKey, key)">
+      <slot
+        v-for="key in fieldSetKeys"
+        :fieldSet="currentFieldSet[key]"
+        :relativeKey="relativeKey ? `${relativeKey}.${key}` : key"
+        :value="value[key]"
+        :name="slotName(relativeKey, key)"
+      >
         <FieldSet
           class="mb-4"
           :exclude="
@@ -21,7 +27,9 @@
           @validate="(v) => $emit('validate', v)"
           v-model="value[key]"
         >
-          <slot v-for="(_, name) in $slots" :name="name" :slot="name" />
+          <template v-for="(_, name) in $scopedSlots" v-slot:[name]="data">
+            <slot :name="name" v-bind="data" />
+          </template>
         </FieldSet>
       </slot>
       <v-row dense>
@@ -44,7 +52,15 @@
             -- {{ slotName(relativeKey, key) }} используется режим разработчика
             --
           </div>
-          <slot :name="slotName(relativeKey, key)" :value="value[key]">
+          <slot
+            :name="slotName(relativeKey, key)"
+            :meta="currentFieldSet[key]"
+            :item="value[key]"
+            :relativeKey="relativeKey"
+            :currentKey="key"
+            :setter="updateValue"
+            :test="'test'"
+          >
             <Primitive
               :isDev="isDev"
               @validate="
@@ -99,6 +115,13 @@ export default {
   methods: {
     slotName(relative, current) {
       return (relative ? `${relative}-${current}` : current) + "-slot";
+    },
+    updateValue(key, newValue) {
+      this.value[key] = newValue;
+      this.$emit("validate", {
+        value: newValue,
+        field: this.relativeKey ? `${this.relativeKey}.${key}` : `${key}`,
+      });
     },
   },
   computed: {
