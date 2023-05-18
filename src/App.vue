@@ -14,13 +14,13 @@
         @update="(v) => showValidate(v)"
         @validate="(v) => showValidate(v)"
       >
-        <template
-          #api_server-password-slot="{ meta, item, setter, currentKey }"
-        >
+        <template #api_server-password-slot="{ meta, item, setattr }">
           <v-text-field
+            dense
+            outlined
             :label="meta.label"
             :value="item"
-            @change="(v) => setter(currentKey, v)"
+            @change="(v) => setattr(v)"
           ></v-text-field>
         </template>
         <template #api_server-action-slot>
