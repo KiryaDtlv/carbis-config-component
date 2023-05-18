@@ -80,7 +80,6 @@
 </template>
 
 <script>
-// @updateValue="(newValue) => {value[key] = newValue; $emit('input',)} "
 import Primitive from "./Primitive.vue";
 export default {
   components: { Primitive },

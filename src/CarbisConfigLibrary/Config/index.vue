@@ -18,8 +18,9 @@
 </template>
 
 <script>
-import FieldSet from "../components/Config/FieldSet.vue";
+import FieldSet from "./FieldSet.vue";
 export default {
+  components: { FieldSet },
   props: {
     value: { type: Object, default: () => {} },
     metaConfig: {
@@ -45,7 +46,6 @@ export default {
       updatedState: {},
     };
   },
-  components: { FieldSet },
 
   methods: {
     localization(value) {
@@ -94,6 +94,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>

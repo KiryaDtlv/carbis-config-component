@@ -14,9 +14,7 @@
 import InputField from "./InputField.vue";
 export default {
   components: { InputField },
-  mounted() {
-    console.log(this.$attrs);
-  },
+  mounted() {},
   data() {
     return {
       showpwd: false,

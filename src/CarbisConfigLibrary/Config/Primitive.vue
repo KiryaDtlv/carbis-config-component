@@ -18,9 +18,11 @@
           </v-tooltip>
         </template>
         <template #append-outer>
-          <v-icon color="warning" @click="reset(originalValue)">{{
-            originalValue !== currentValue ? "mdi-update" : undefined
-          }}</v-icon>
+          <ResetIcon
+            @reset="(v) => reset(v)"
+            :newValue="currentValue"
+            :oldValue="originalValue"
+          />
         </template>
       </InputField>
       <PasswordField
@@ -40,9 +42,11 @@
         </template>
 
         <template #append-outer>
-          <v-icon color="warning" @click="reset(originalValue)">{{
-            originalValue !== currentValue ? "mdi-update" : undefined
-          }}</v-icon>
+          <ResetIcon
+            @reset="(v) => reset(v)"
+            :newValue="currentValue"
+            :oldValue="originalValue"
+          />
         </template>
       </PasswordField>
     </v-sheet>
@@ -70,9 +74,7 @@
         <template #label>
           <div class="align-center">
             <span class="mr-2">{{ meta.label }}</span>
-            <v-icon color="warning" @click="reset(originalValue)">{{
-              originalValue !== currentValue ? "mdi-update" : undefined
-            }}</v-icon>
+            <ResetIcon :newValue="currentValue" :oldValue="originalValue" />
           </div>
         </template>
       </v-switch>
@@ -86,11 +88,11 @@
 </template>
 
 <script>
-import InputField from "../../ui/Carbis/InputField.vue";
-import PasswordField from "../../ui/Carbis/PasswordField.vue";
-import CarbisSwitch from "../../ui/Carbis/CarbisSwitch.vue";
+import InputField from "./ui/InputField.vue";
+import PasswordField from "./ui/PasswordField.vue";
+import ResetIcon from "./ui/ResetIcon.vue";
 export default {
-  components: { InputField, PasswordField, CarbisSwitch },
+  components: { InputField, PasswordField, ResetIcon },
   props: {
     value: {
       type: [Number, String, Boolean],
@@ -150,12 +152,8 @@ export default {
   },
   watch: {
     currentValue(newValue) {
-      console.log("currentValue: ", newValue);
       this.$emit("input", newValue);
     },
   },
 };
 </script>
-
-<style>
-</style>

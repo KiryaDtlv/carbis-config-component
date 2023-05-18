@@ -33,17 +33,15 @@
 </template>
 
 <script>
-import SaaS from "./components/SaaS.vue";
-import Selector from "./ui/Carbis/Selector.vue";
-import Config from "./views/Config";
+// import SaaS from "./components/SaaS.vue";
+// import Selector from "./ui/Carbis/Selector.vue";
+import Config from "./CarbisConfigLibrary/Config/index.vue";
 
 export default {
   name: "App",
 
   components: {
     Config,
-    Selector,
-    SaaS,
   },
   async mounted() {
     await this.$store.dispatch("getMetaConfig");
