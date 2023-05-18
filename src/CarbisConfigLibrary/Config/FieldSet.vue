@@ -2,9 +2,7 @@
   <v-card class="mb-3">
     <v-card-title>{{ fieldSet.label || "Настройки" }}</v-card-title>
     <v-card-subtitle v-if="isDev && relativeKey">
-      <div style="font-size: 13px">
-        -- {{ relativeKey + "-slot" }} используется режим разработчика --
-      </div>
+      <DevInfo :path="slotName('', relativeKey)" />
     </v-card-subtitle>
     <v-card-text>
       <slot
@@ -34,13 +32,8 @@
         </FieldSet>
       </slot>
       <v-row dense>
-        <v-col
-          class="col-12"
-          v-if="$slots[(relativeKey ? `${relativeKey}-` : '') + `header-slot`]"
-        >
-          <slot
-            :name="(relativeKey ? `${relativeKey}-` : '') + `header-slot`"
-          />
+        <v-col class="col-12" v-if="$slots[slotName(relativeKey, 'header')]">
+          <slot :name="slotName(relativeKey, 'header')" />
         </v-col>
         <v-col
           v-for="(key, idx) in primitiveKeys"
@@ -49,10 +42,8 @@
             primitiveKeys.length % 2 == 0 && !isMobile ? 'col-6' : 'col-12',
           ]"
         >
-          <div style="font-size: 13px; min-height: 40px" v-if="isDev">
-            -- {{ slotName(relativeKey, key) }} используется режим разработчика
-            --
-          </div>
+          <DevInfo :path="slotName(relativeKey, key)" v-if="isDev" />
+
           <slot
             :name="slotName(relativeKey, key)"
             :meta="currentFieldSet[key]"
@@ -77,28 +68,22 @@
           </slot>
         </v-col>
 
-        <v-col
-          class="col-12"
-          v-if="$slots[(relativeKey ? `${relativeKey}-` : '') + `footer-slot`]"
-        >
-          <slot
-            :name="(relativeKey ? `${relativeKey}-` : '') + `footer-slot`"
-          ></slot>
+        <v-col class="col-12" v-if="$slots[slotName(relativeKey, 'footer')]">
+          <slot :name="slotName(relativeKey, 'footer')"></slot>
         </v-col>
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <slot
-        :name="(relativeKey ? `${relativeKey}-action` : 'action') + '-slot'"
-      ></slot>
+      <slot :name="slotName(relativeKey, 'action')"></slot>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import Primitive from "./Primitive.vue";
+import DevInfo from "./ui/DevInfo.vue";
 export default {
-  components: { Primitive },
+  components: { Primitive, DevInfo },
   name: "FieldSet",
   props: {
     value: Object,

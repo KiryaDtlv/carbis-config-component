@@ -50,7 +50,6 @@ export default {
       updatedState: {},
     };
   },
-  mounted() {},
 
   methods: {
     localization(value) {

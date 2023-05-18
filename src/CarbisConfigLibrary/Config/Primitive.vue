@@ -10,12 +10,7 @@
         v-if="!meta.password"
       >
         <template v-slot:prepend>
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
-            </template>
-            {{ meta.hint || meta.label }}
-          </v-tooltip>
+          <ToolTip :label="meta.label" :hint="meta.hint" />
         </template>
         <template #append-outer>
           <ResetIcon
@@ -33,12 +28,7 @@
         v-else
       >
         <template v-slot:prepend>
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
-            </template>
-            {{ meta.hint || meta.label }}
-          </v-tooltip>
+          <ToolTip :label="meta.label" :hint="meta.hint" />
         </template>
 
         <template #append-outer>
@@ -64,12 +54,7 @@
         "
       >
         <template #prepend>
-          <v-tooltip top>
-            <template #activator="{ on }">
-              <v-icon v-on="on"> mdi-help-circle-outline </v-icon>
-            </template>
-            {{ meta.hint || meta.label }}
-          </v-tooltip>
+          <ToolTip :label="meta.label" :hint="meta.hint" />
         </template>
         <template #label>
           <div class="align-center">
@@ -91,8 +76,9 @@
 import InputField from "./ui/InputField.vue";
 import PasswordField from "./ui/PasswordField.vue";
 import ResetIcon from "./ui/ResetIcon.vue";
+import ToolTip from "./ui/ToolTip.vue";
 export default {
-  components: { InputField, PasswordField, ResetIcon },
+  components: { InputField, PasswordField, ResetIcon, ToolTip },
   props: {
     value: {
       type: [Number, String, Boolean],
