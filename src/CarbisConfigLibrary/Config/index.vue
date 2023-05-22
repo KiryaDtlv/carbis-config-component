@@ -8,6 +8,7 @@
       <FieldSet
         :fieldSet="metaConfig"
         :isDev="isDev"
+        :defaultOpened="defaultOpened"
         :exclude="exclude"
         v-model="value"
         @validate="(v) => onValidate(v)"
@@ -41,6 +42,10 @@ export default {
     isDev: {
       type: Boolean,
       default: false,
+    },
+    defaultOpened: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {

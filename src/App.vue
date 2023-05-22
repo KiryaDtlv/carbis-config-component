@@ -30,6 +30,8 @@
       <Config
         :metaConfig="metaConfig"
         v-model="localConfig"
+        :defaultOpened="['api_server']"
+        :isDev="true"
         :loading="loading"
         @update="(v) => (updated = { ...v })"
         @validate="(v) => showValidate(v)"

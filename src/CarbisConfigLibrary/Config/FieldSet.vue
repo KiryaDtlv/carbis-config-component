@@ -7,7 +7,7 @@
       <DevInfo :path="slotName('', relativeKey)" />
     </v-card-subtitle>
     <v-card-text>
-      <v-expansion-panels accordion multiple focusable>
+      <v-expansion-panels v-model="openedPanels" accordion multiple focusable>
         <slot
           v-for="key in fieldSetKeys"
           :item="value[key]"
@@ -30,6 +30,11 @@
                     : newExclude
                 "
                 :isDev="isDev"
+                :defaultOpened="
+                  panelsObject[key]
+                    ? [panelsObject[key], ...newPanels]
+                    : newPanels
+                "
                 :fieldSet="currentFieldSet[key]"
                 :relativeKey="relativeKey ? `${relativeKey}.${key}` : key"
                 @validate="(v) => $emit('validate', v)"
@@ -108,16 +113,23 @@ export default {
   name: "FieldSet",
   props: {
     value: Object,
-    fieldSet: { type: Object, default: {} },
-    exclude: { type: Array, default: [] },
+    fieldSet: { type: Object, default: () => {} },
+    exclude: { type: Array, default: () => [] },
     relativeKey: { type: String, default: undefined },
     isDev: { type: Boolean, default: false },
     isTitled: { type: Boolean, default: true },
+    defaultOpened: { type: Array, default: () => [] },
+  },
+  data() {
+    return {
+      openedPanels: [],
+    };
   },
   mounted() {
     this.primitiveKeys.forEach((element) => {
       this.value[element];
     });
+    this.setCurrentOpenedPanels(this.currentPanels);
   },
   methods: {
     slotName(relative, current) {
@@ -130,11 +142,41 @@ export default {
         field: this.relativeKey ? `${this.relativeKey}.${key}` : `${key}`,
       });
     },
+    dotSplit(list) {
+      return list?.map((x) => x.split("."));
+    },
+    dotJoin(list) {
+      return list.map((x) => x.join("."));
+    },
+    filterCurrent(list) {
+      return list.filter((x) => x.length == 1);
+    },
+    setCurrentOpenedPanels(list) {
+      this.fieldSetKeys.forEach((x, idx) => {
+        if (list.includes(x)) {
+          this.openedPanels.push(idx);
+        }
+      });
+    },
+    getInsetObject(list) {
+      return list.reduce((acc, currentValue) => {
+        if (currentValue.length > 1) {
+          return {
+            ...acc,
+            ...Object.fromEntries([
+              [
+                currentValue[0],
+                this.dotJoin(currentValue.splice(1, currentValue.length)),
+              ],
+            ]),
+          };
+        } else {
+          return acc;
+        }
+      }, {});
+    },
   },
   computed: {
-    splittedExclude() {
-      return this.exclude?.map((x) => x.split("."));
-    },
     isMobile() {
       console.log(this.$vuetify.breakpoint.name);
       switch (this.$vuetify.breakpoint.name) {
@@ -147,32 +189,29 @@ export default {
           return false;
       }
     },
+    splittedExclude() {
+      return this.dotSplit(this.exclude);
+    },
     currentExclude() {
-      return this.splittedExclude
-        .filter((x) => x.length == 1)
-        .map((x) => x.join("."));
+      return this.dotJoin(this.filterCurrent(this.splittedExclude));
     },
     newExclude() {
-      return this.splittedExclude.map((x) => {
-        return x.join(".");
-      });
+      return this.dotJoin(this.splittedExclude);
     },
     excludeObject() {
-      return this.splittedExclude.reduce((acc, currentValue) => {
-        if (currentValue.length > 1) {
-          return {
-            ...acc,
-            ...Object.fromEntries([
-              [
-                currentValue[0],
-                currentValue.splice(1, currentValue.length).join("."),
-              ],
-            ]),
-          };
-        } else {
-          return acc;
-        }
-      }, {});
+      return this.getInsetObject(this.splittedExclude);
+    },
+    splittedPanels() {
+      return this.dotSplit(this.defaultOpened);
+    },
+    currentPanels() {
+      return this.dotJoin(this.filterCurrent(this.splittedPanels));
+    },
+    newPanels() {
+      return this.dotJoin(this.splittedPanels);
+    },
+    panelsObject() {
+      return this.getInsetObject(this.splittedPanels);
     },
     metaKeys() {
       return Object.keys(this.currentFieldSet).filter(
