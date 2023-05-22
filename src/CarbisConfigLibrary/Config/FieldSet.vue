@@ -32,8 +32,8 @@
         </FieldSet>
       </slot>
       <v-row dense>
-        <v-col class="col-12" v-if="$slots[slotName(relativeKey, 'header')]">
-          <slot :name="slotName(relativeKey, 'header')" />
+        <v-col class="col-12" v-if="$scopedSlots[slotName(relativeKey, 'header')]">
+          <slot :name="slotName(relativeKey, 'header')" :item="value" />
         </v-col>
         <v-col
           v-for="(key, idx) in primitiveKeys"
@@ -68,13 +68,13 @@
           </slot>
         </v-col>
 
-        <v-col class="col-12" v-if="$slots[slotName(relativeKey, 'footer')]">
-          <slot :name="slotName(relativeKey, 'footer')"></slot>
+        <v-col class="col-12" v-if="$scopedSlots[slotName(relativeKey, 'footer')]">
+          <slot :name="slotName(relativeKey, 'footer')" :item="value"></slot>
         </v-col>
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <slot :name="slotName(relativeKey, 'action')"></slot>
+      <slot :name="slotName(relativeKey, 'action')" :item="value"></slot>
     </v-card-actions>
   </v-card>
 </template>
