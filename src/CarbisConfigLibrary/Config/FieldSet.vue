@@ -51,7 +51,7 @@
           </v-expansion-panel>
         </slot>
       </v-expansion-panels>
-      <v-row dense class="mt-2">
+      <v-row dense :class="[fieldSetKeys.length ? 'mt-5' : '']">
         <v-col
           class="col-12"
           v-if="$scopedSlots[slotName(relativeKey, 'header')]"
@@ -99,7 +99,7 @@
         </v-col>
       </v-row>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions v-if="$scopedSlots[slotName(relativeKey, 'action')]">
       <slot :name="slotName(relativeKey, 'action')" :item="value"></slot>
     </v-card-actions>
   </v-card>
@@ -146,6 +146,7 @@ export default {
       return list?.map((x) => x.split("."));
     },
     dotJoin(list) {
+      console.log(list);
       return list.map((x) => x.join("."));
     },
     filterCurrent(list) {
@@ -166,7 +167,7 @@ export default {
             ...Object.fromEntries([
               [
                 currentValue[0],
-                this.dotJoin(currentValue.splice(1, currentValue.length)),
+                currentValue.splice(1, currentValue.length).join("."),
               ],
             ]),
           };
