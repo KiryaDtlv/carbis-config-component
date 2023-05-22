@@ -35,7 +35,7 @@
         @update="(v) => (updated = { ...v })"
         @validate="(v) => showValidate(v)"
       >
-        <template #api_server-password-slot="{ meta, item, setattr }">
+        <!-- <template #api_server-password-slot="{ meta, item, setattr }">
           <v-text-field
             dense
             outlined
@@ -43,7 +43,7 @@
             :value="item"
             @change="(v) => setattr(v)"
           ></v-text-field>
-        </template>
+        </template> -->
         <template #api_server-action-slot="{ item }">
           <v-btn color="primary" @click="checkConnection(item)"
             >Проверить соединение</v-btn
