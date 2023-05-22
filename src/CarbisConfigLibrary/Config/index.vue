@@ -52,7 +52,6 @@ export default {
     return {
       savedState: {},
       updatedState: {},
-      panel: [0],
     };
   },
 

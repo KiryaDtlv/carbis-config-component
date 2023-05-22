@@ -1,6 +1,6 @@
 {
   "name": "carbis-config-component",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A component for quickly creating a configuration from a Parametrica python module from its metadata",
   "main": "index.js",
   "scripts": {
