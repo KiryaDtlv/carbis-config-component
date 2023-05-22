@@ -20,6 +20,15 @@ export default {
             commit('setConfig', r)
 
         },
+        async validate({ dispatch }, data) {
+            await dispatch('api_request', {
+                method: '/config/validate',
+                options: {
+                    method: 'post',
+                    body: JSON.stringify(data)
+                }
+            })
+        },
         async getMetaConfig({ commit, dispatch }) {
             let r = await dispatch('api_request', {
                 method: '/config-meta',
@@ -40,7 +49,7 @@ export default {
             })
             await dispatch('getConfig')
         },
-        
+
     },
 
     mutations: {

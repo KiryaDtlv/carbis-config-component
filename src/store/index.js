@@ -27,11 +27,13 @@ export default new Vuex.Store({
       console.log(url)
 
       let r = await fetch(url, options.options || {})
-      return await r.json()
-      if (!r.error) {
-        return r.data
-      }
-      throw Error(r.error_message)
+      const response = await r.json()
+      if (response.error)
+        throw response.error_message
+      else 
+        return response
+      
+
     }
   },
   modules: {
