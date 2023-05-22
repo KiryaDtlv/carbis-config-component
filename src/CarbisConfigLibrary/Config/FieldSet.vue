@@ -1,38 +1,56 @@
 <template>
-  <v-card class="mb-3">
-    <v-card-title>{{ fieldSet.label || "Настройки" }}</v-card-title>
+  <v-card v-bind="$attrs">
+    <v-card-title v-if="isTitled">
+      {{ fieldSet.label || "Настройки" }}</v-card-title
+    >
     <v-card-subtitle v-if="isDev && relativeKey">
       <DevInfo :path="slotName('', relativeKey)" />
     </v-card-subtitle>
     <v-card-text>
-      <slot
-        v-for="key in fieldSetKeys"
-        :item="value[key]"
-        :meta="currentFieldSet[key]"
-        :relativeKey="relativeKey"
-        :currentKey="key"
-        :name="slotName(relativeKey, key)"
-      >
-        <FieldSet
-          class="mb-4"
-          :exclude="
-            excludeObject[key]
-              ? [excludeObject[key], ...newExclude]
-              : newExclude
-          "
-          :isDev="isDev"
-          :fieldSet="currentFieldSet[key]"
-          :relativeKey="relativeKey ? `${relativeKey}.${key}` : key"
-          @validate="(v) => $emit('validate', v)"
-          v-model="value[key]"
+      <v-expansion-panels accordion multiple focusable>
+        <slot
+          v-for="key in fieldSetKeys"
+          :item="value[key]"
+          :meta="currentFieldSet[key]"
+          :relativeKey="relativeKey"
+          :currentKey="key"
+          :name="slotName(relativeKey, key)"
         >
-          <template v-for="(_, name) in $scopedSlots" v-slot:[name]="data">
-            <slot :name="name" v-bind="data" />
-          </template>
-        </FieldSet>
-      </slot>
-      <v-row dense>
-        <v-col class="col-12" v-if="$scopedSlots[slotName(relativeKey, 'header')]">
+          <v-expansion-panel>
+            <v-expansion-panel-header>
+              <h3>{{ currentFieldSet[key].label || "Настройки" }}</h3>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <FieldSet
+                elevation="0"
+                :isTitled="false"
+                :exclude="
+                  excludeObject[key]
+                    ? [excludeObject[key], ...newExclude]
+                    : newExclude
+                "
+                :isDev="isDev"
+                :fieldSet="currentFieldSet[key]"
+                :relativeKey="relativeKey ? `${relativeKey}.${key}` : key"
+                @validate="(v) => $emit('validate', v)"
+                v-model="value[key]"
+              >
+                <template
+                  v-for="(_, name) in $scopedSlots"
+                  v-slot:[name]="data"
+                >
+                  <slot :name="name" v-bind="data" />
+                </template>
+              </FieldSet>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </slot>
+      </v-expansion-panels>
+      <v-row dense class="mt-2">
+        <v-col
+          class="col-12"
+          v-if="$scopedSlots[slotName(relativeKey, 'header')]"
+        >
           <slot :name="slotName(relativeKey, 'header')" :item="value" />
         </v-col>
         <v-col
@@ -68,7 +86,10 @@
           </slot>
         </v-col>
 
-        <v-col class="col-12" v-if="$scopedSlots[slotName(relativeKey, 'footer')]">
+        <v-col
+          class="col-12"
+          v-if="$scopedSlots[slotName(relativeKey, 'footer')]"
+        >
           <slot :name="slotName(relativeKey, 'footer')" :item="value"></slot>
         </v-col>
       </v-row>
@@ -91,6 +112,7 @@ export default {
     exclude: { type: Array, default: [] },
     relativeKey: { type: String, default: undefined },
     isDev: { type: Boolean, default: false },
+    isTitled: { type: Boolean, default: true },
   },
   mounted() {
     this.primitiveKeys.forEach((element) => {

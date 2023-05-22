@@ -5,7 +5,6 @@
       type="list-item-three-line"
     ></v-skeleton-loader>
     <v-sheet v-else>
-      <slot name="test_test-slot"></slot>
       <FieldSet
         :fieldSet="metaConfig"
         :isDev="isDev"
@@ -48,6 +47,7 @@ export default {
     return {
       savedState: {},
       updatedState: {},
+      panel: [0],
     };
   },
 

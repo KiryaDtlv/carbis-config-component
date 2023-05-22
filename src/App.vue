@@ -6,17 +6,32 @@
     </v-app-bar>
 
     <v-main>
-      <div class="messages-control" style="max-width: 330px; overflow: hidden; z-index: 120000">
+      <div
+        class="messages-control"
+        style="max-width: 330px; overflow: hidden; z-index: 120000"
+      >
         <transition-group name="list" mode="out-in" style="position: relative">
-          <v-alert v-for="(error, idx) in errors" type="error" :key="idx" style="width: 100%; max-width: 330px; cursor: pointer; white-space: pre-wrap; font-size: .8rem; user-select: none">{{error}}</v-alert>
+          <v-alert
+            v-for="(error, idx) in errors"
+            type="error"
+            :key="idx"
+            style="
+              width: 100%;
+              max-width: 330px;
+              cursor: pointer;
+              white-space: pre-wrap;
+              font-size: 0.8rem;
+              user-select: none;
+            "
+            >{{ error }}</v-alert
+          >
         </transition-group>
       </div>
       <Config
         :metaConfig="metaConfig"
         v-model="localConfig"
-        :isDev="true"
         :loading="loading"
-        @update="(v) => updated = {...v}"
+        @update="(v) => (updated = { ...v })"
         @validate="(v) => showValidate(v)"
       >
         <template #api_server-password-slot="{ meta, item, setattr }">
@@ -28,11 +43,9 @@
             @change="(v) => setattr(v)"
           ></v-text-field>
         </template>
-        <template #api_server-action-slot="{item}">
-          <v-btn
-            color="primary"
-            @click="checkConnection(item)"
-            >{{item}}</v-btn
+        <template #api_server-action-slot="{ item }">
+          <v-btn color="primary" @click="checkConnection(item)"
+            >Проверить соединение</v-btn
           >
         </template>
         <template v-slot:action-slot>
@@ -66,7 +79,7 @@ export default {
       loading: true,
       localConfig: undefined,
       errors: [],
-      updated: {}
+      updated: {},
     };
   },
   computed: {
@@ -79,11 +92,11 @@ export default {
   },
   methods: {
     async showValidate(newValue) {
-      try{
+      try {
         await this.$store.dispatch("validate", newValue);
-      } catch(e){
-        this.errors.push(e)
-        setTimeout(() => this.errors.shift(), 5000) 
+      } catch (e) {
+        this.errors.push(e);
+        setTimeout(() => this.errors.shift(), 5000);
       }
     },
     async updateConfig(config) {
