@@ -1,7 +1,12 @@
 <template>
   <v-sheet>
     <slot name="develop"></slot>
-    <v-sheet v-if="[typeMap.str, typeMap.int].includes(typeMap[meta.type])">
+    <v-sheet
+      v-if="
+        [typeMap.str, typeMap.int].includes(typeMap[meta.type]) &&
+        !meta.is_iterable
+      "
+    >
       <InputField
         v-model="currentValue"
         @change="(v) => $emit('validate', v)"
@@ -40,7 +45,11 @@
         </template>
       </PasswordField>
     </v-sheet>
-    <v-sheet v-else-if="[typeMap.bool].includes(typeMap[meta.type])">
+    <v-sheet
+      v-else-if="
+        [typeMap.bool].includes(typeMap[meta.type]) && !meta.is_iterable
+      "
+    >
       <v-switch
         inset
         dense
