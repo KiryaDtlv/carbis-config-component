@@ -79,7 +79,10 @@ export default {
       const keys = Object.keys(newConfig);
       const updated = {};
       keys.forEach((key) => {
-        if (typeof newConfig[key] === "object") {
+        if (
+          typeof newConfig[key] === "object" &&
+          !Array.isArray(newConfig[key])
+        ) {
           const value = this.getDiff(newConfig[key], oldConfig[key]);
           if (Object.keys(value).length) {
             updated[key] = value;

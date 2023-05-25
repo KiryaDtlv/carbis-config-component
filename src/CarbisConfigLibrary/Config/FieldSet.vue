@@ -146,7 +146,6 @@ export default {
       return list?.map((x) => x.split("."));
     },
     dotJoin(list) {
-      console.log(list);
       return list.map((x) => x.join("."));
     },
     filterCurrent(list) {
@@ -179,7 +178,6 @@ export default {
   },
   computed: {
     isMobile() {
-      console.log(this.$vuetify.breakpoint.name);
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
         case "sm":
