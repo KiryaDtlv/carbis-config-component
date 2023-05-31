@@ -82,10 +82,8 @@
 </template>
 
 <script>
-import InputField from "./ui/InputField.vue";
-import PasswordField from "./ui/PasswordField.vue";
+import { InputField, PasswordField, ToolTip } from "carbis-ui-library";
 import ResetIcon from "./ui/ResetIcon.vue";
-import ToolTip from "./ui/ToolTip.vue";
 export default {
   components: { InputField, PasswordField, ResetIcon, ToolTip },
   props: {

@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
-    "vuetify": "^2.6.0"
+    "vuetify": "^2.6.0",
+    "carbis-ui-library": "^0.1.0"
   },
   "keywords": [
     "[\"carbis\"",
