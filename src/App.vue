@@ -31,19 +31,20 @@
         :metaConfig="metaConfig"
         v-model="localConfig"
         :defaultOpened="['api_server.test', 'local_server']"
+        :isDev="true"
         :loading="loading"
-        @update="(v) => (updated = { ...v })"
+        @update="(v) => showValidate(v)"
         @validate="(v) => showValidate(v)"
       >
-        <!-- <template #api_server-password-slot="{ meta, item, setattr }">
-          <v-text-field
-            dense
-            outlined
-            :label="meta.label"
+        <template #report-allowed_departments-slot="{ item, setattr, meta }">
+          <v-combobox
+            multiple
             :value="item"
+            :label="meta.label"
+            :items="item"
             @change="(v) => setattr(v)"
-          ></v-text-field>
-        </template> -->
+          ></v-combobox>
+        </template>
         <template #api_server-action-slot="{ item }">
           <v-btn color="primary" @click="checkConnection(item)"
             >Проверить соединение</v-btn
@@ -55,6 +56,13 @@
             >Сохранить</v-btn
           >
         </template>
+        <!-- <template #server_list-slot="{ item, meta }">
+          <v-autocomplete :items="item" outlined dense hide-details>
+            <template #>
+              <v-tooltip></v-tooltip>
+            </template>
+          </v-autocomplete>
+        </template> -->
       </Config>
     </v-main>
   </v-app>
@@ -62,12 +70,14 @@
 
 <script>
 import Config from "./CarbisConfigLibrary/Config/index.vue";
+import ToolTip from "./CarbisConfigLibrary/Config/ui/ToolTip.vue";
 
 export default {
   name: "App",
 
   components: {
     Config,
+    ToolTip,
   },
   async mounted() {
     await this.$store.dispatch("getMetaConfig");
@@ -94,10 +104,11 @@ export default {
   methods: {
     async showValidate(newValue) {
       try {
-        await this.$store.dispatch("validate", newValue);
+        // await this.$store.dispatch("validate", newValue);
+        console.log(newValue);
       } catch (e) {
-        this.errors.push(e);
-        setTimeout(() => this.errors.shift(), 5000);
+        // this.errors.push(e);
+        // setTimeout(() => this.errors.shift(), 5000);
       }
     },
     async updateConfig(config) {
