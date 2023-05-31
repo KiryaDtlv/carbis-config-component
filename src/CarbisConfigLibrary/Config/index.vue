@@ -5,10 +5,10 @@
       type="list-item-three-line"
     ></v-skeleton-loader>
     <v-sheet v-else>
-      <slot name="test_test-slot"></slot>
       <FieldSet
         :fieldSet="metaConfig"
         :isDev="isDev"
+        :defaultOpened="defaultOpened"
         :exclude="exclude"
         v-model="value"
         @validate="(v) => onValidate(v)"
@@ -43,6 +43,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    defaultOpened: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -75,7 +79,10 @@ export default {
       const keys = Object.keys(newConfig);
       const updated = {};
       keys.forEach((key) => {
-        if (typeof newConfig[key] === "object") {
+        if (
+          typeof newConfig[key] === "object" &&
+          !Array.isArray(newConfig[key])
+        ) {
           const value = this.getDiff(newConfig[key], oldConfig[key]);
           if (Object.keys(value).length) {
             updated[key] = value;
