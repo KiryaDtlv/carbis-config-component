@@ -34,7 +34,6 @@ export default {
     },
     orderKeys: {
       type: Object,
-      default: () => {},
     },
     exclude: {
       type: Array,

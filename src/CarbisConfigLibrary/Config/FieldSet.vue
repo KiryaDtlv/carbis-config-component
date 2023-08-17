@@ -36,7 +36,11 @@
                     : newPanels
                 "
                 :fieldSet="currentFieldSet[key]"
-                :orderKeys="orderKeys[key]"
+                :orderKeys="
+                  orderKeys && orderKeys.hasOwnProperty(key)
+                    ? orderKeys[key]
+                    : undefined
+                "
                 :relativeKey="relativeKey ? `${relativeKey}.${key}` : key"
                 @validate="(v) => $emit('validate', v)"
                 v-model="value[key]"
@@ -233,7 +237,6 @@ export default {
       } else {
         keys = this.currentFieldSet;
       }
-      console.log(Object.keys(keys));
       return Object.keys(keys).filter(
         (key) => !this.currentExclude.includes(key)
       );
