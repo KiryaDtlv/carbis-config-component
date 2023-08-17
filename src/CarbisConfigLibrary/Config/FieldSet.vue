@@ -36,6 +36,7 @@
                     : newPanels
                 "
                 :fieldSet="currentFieldSet[key]"
+                :orderKeys="orderKeys[key]"
                 :relativeKey="relativeKey ? `${relativeKey}.${key}` : key"
                 @validate="(v) => $emit('validate', v)"
                 v-model="value[key]"
@@ -119,6 +120,7 @@ export default {
     isDev: { type: Boolean, default: false },
     isTitled: { type: Boolean, default: true },
     defaultOpened: { type: Array, default: () => [] },
+    orderKeys: {},
   },
   data() {
     return {
@@ -213,18 +215,33 @@ export default {
       return this.getInsetObject(this.splittedPanels);
     },
     metaKeys() {
-      return Object.keys(this.currentFieldSet).filter(
+      let keys = [];
+      if (this.orderKeys) {
+        let currentOrder = Array.isArray(this.orderKeys)
+          ? this.orderKeys
+          : Object.keys(this.orderKeys);
+        currentOrder.forEach((key) => {
+          if (this.currentFieldSet.hasOwnProperty(key)) {
+            keys[key] = this.currentFieldSet[key];
+          }
+        });
+        Object.keys(this.currentFieldSet).forEach((key) => {
+          if (!keys.hasOwnProperty(key)) {
+            keys[key] = this.currentFieldSet[key];
+          }
+        });
+      } else {
+        keys = this.currentFieldSet;
+      }
+      console.log(Object.keys(keys));
+      return Object.keys(keys).filter(
         (key) => !this.currentExclude.includes(key)
       );
     },
     primitiveKeys() {
-      return this.metaKeys
-        .filter((key) => this.currentFieldSet[key].is_primitive)
-        .sort(
-          (a, b) =>
-            this.currentFieldSet[a].type.length -
-            this.currentFieldSet[b].type.length
-        );
+      return this.metaKeys.filter(
+        (key) => this.currentFieldSet[key].is_primitive
+      );
     },
     fieldSetKeys() {
       return this.metaKeys.filter(

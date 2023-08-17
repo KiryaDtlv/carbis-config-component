@@ -32,6 +32,7 @@
         v-model="localConfig"
         :defaultOpened="['api_server.test', 'local_server']"
         :isDev="true"
+        :orderKeys="{ mid_server: ['port', 'host'] }"
         :loading="loading"
         @update="(v) => showValidate(v)"
         @validate="(v) => showValidate(v)"
@@ -70,14 +71,12 @@
 
 <script>
 import Config from "./CarbisConfigLibrary/Config/index.vue";
-import ToolTip from "./CarbisConfigLibrary/Config/ui/ToolTip.vue";
 
 export default {
   name: "App",
 
   components: {
     Config,
-    ToolTip,
   },
   async mounted() {
     await this.$store.dispatch("getMetaConfig");

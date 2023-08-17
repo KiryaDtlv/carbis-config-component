@@ -10,6 +10,7 @@
         :isDev="isDev"
         :defaultOpened="defaultOpened"
         :exclude="exclude"
+        :orderKeys="orderKeys"
         v-model="value"
         @validate="(v) => onValidate(v)"
       >
@@ -30,6 +31,10 @@ export default {
     metaConfig: {
       type: Object,
       required: true,
+    },
+    orderKeys: {
+      type: Object,
+      default: () => {},
     },
     exclude: {
       type: Array,
